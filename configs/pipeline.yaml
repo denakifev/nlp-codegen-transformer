@@ -1,0 +1,93 @@
+base_config: configs/online.yaml
+output_dir: runs/pipeline
+seed: 42
+prepare_data: true
+stages:
+  - name: code_warmup
+    steps: 100000
+    handoff: best
+    overrides:
+      heads:
+        structure: false
+        grounding: false
+      task_sampling:
+        always_code: true
+        auxiliary_tasks_per_step: 0
+      gradients:
+        mode: none
+      train:
+        scope: all
+        max_total_seconds: 10800
+      optimizer:
+        lr: 0.0003
+      scheduler:
+        warmup_steps: 2000
+  - name: joint_mtl
+    steps: 600000
+    handoff: best
+    overrides:
+      heads:
+        structure: true
+        grounding: true
+      task_sampling:
+        always_code: false
+        auxiliary_tasks_per_step: 2
+        weights:
+          code: 4.0
+          structure: 1.0
+          grounding: 1.0
+        drop_probabilities:
+          structure: 0.15
+          grounding: 0.15
+      loss_weights:
+        code: 1.0
+        structure: 0.1
+        grounding: 0.1
+      gradients:
+        mode: orthogonal
+      train:
+        scope: all
+        max_total_seconds: 64800
+      optimizer:
+        lr: 0.0002
+      scheduler:
+        warmup_steps: 4000
+  - name: code_consolidation
+    steps: 80000
+    handoff: best
+    overrides:
+      heads:
+        structure: false
+        grounding: false
+      task_sampling:
+        always_code: true
+        auxiliary_tasks_per_step: 0
+      gradients:
+        mode: none
+      train:
+        scope: all
+        max_total_seconds: 7200
+      optimizer:
+        lr: 0.00005
+      scheduler:
+        warmup_steps: 1000
+  - name: decoder
+    steps: 40000
+    handoff: best
+    overrides:
+      heads:
+        structure: false
+        grounding: false
+      task_sampling:
+        always_code: true
+        auxiliary_tasks_per_step: 0
+      gradients:
+        mode: none
+      train:
+        scope: decoder
+        max_total_seconds: 3600
+      optimizer:
+        lr: 0.00001
+        weight_decay: 0.0
+      scheduler:
+        warmup_steps: 500

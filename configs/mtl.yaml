@@ -1,0 +1,2 @@
+train:
+  output_dir: runs/mtl

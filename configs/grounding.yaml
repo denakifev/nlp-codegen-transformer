@@ -1,0 +1,4 @@
+heads:
+  structure: false
+train:
+  output_dir: runs/grounding

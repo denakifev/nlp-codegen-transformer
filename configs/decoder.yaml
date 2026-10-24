@@ -1,0 +1,13 @@
+heads:
+  structure: false
+  grounding: false
+gradients:
+  mode: none
+train:
+  scope: decoder
+  output_dir: runs/decoder
+optimizer:
+  lr: 0.00001
+  weight_decay: 0.0
+scheduler:
+  warmup_steps: 100

@@ -1,0 +1,7 @@
+heads:
+  structure: false
+  grounding: false
+gradients:
+  mode: none
+train:
+  output_dir: runs/ce

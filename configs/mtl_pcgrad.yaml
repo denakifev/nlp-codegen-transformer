@@ -1,0 +1,4 @@
+gradients:
+  mode: pcgrad
+train:
+  output_dir: runs/mtl_pcgrad

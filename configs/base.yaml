@@ -1,0 +1,101 @@
+seed: 42
+model:
+  d_model: 512
+  d_ff: 1408
+  encoder_layers: 6
+  decoder_layers: 6
+  num_heads: 8
+  num_kv_heads: 8
+  dropout: 0.05
+  norm_type: layernorm
+  norm_eps: 0.00001
+  rope_theta: 10000.0
+data:
+  mode: prepared
+  output_dir: data/prepared
+  source:
+    kind: huggingface
+    dataset_name: SlavaYus/tinysms_qa_12m
+    revision: b2724689ff079e9c22efd548fe134bfb29036dbb
+    split: train
+    input_paths: []
+  seed: 42
+  validation_fraction: 0.01
+  tokenizer_sample_size: 120000
+  tokenizer_min_frequency: 2
+  tokenizer_path: null
+  vocab_size: 16384
+  max_source_length: 512
+  max_target_length: 512
+  normalize_code: false
+  preparation_batch_size: 1024
+  sampling_mode: equal_shards
+  online:
+    cpu_workers: 2
+    prefetch_batches: 2
+    shuffle_buffer: 64
+    tokenization_batch_size: 128
+    validation_scan_per_shard: 2048
+heads:
+  structure: true
+  grounding: true
+task_sampling:
+  always_code: true
+  auxiliary_tasks_per_step: 1
+  weights:
+    code: 1.0
+    structure: 1.0
+    grounding: 1.0
+  drop_probabilities:
+    structure: 0.0
+    grounding: 0.0
+loss_weights:
+  code: 1.0
+  structure: 0.1
+  grounding: 0.1
+gradients:
+  mode: orthogonal
+train:
+  output_dir: runs/mtl
+  device: auto
+  precision: fp16
+  scope: all
+  init_checkpoint: null
+  resume: null
+  max_steps: 50000
+  max_seconds: null
+  max_total_seconds: null
+  batch_size: 32
+  microbatch_size: 8
+  gradient_accumulation: 1
+  num_workers: 2
+  prefetch_factor: 2
+  pin_memory: true
+  gradient_clip: 1.0
+  ema_decay: 0.999
+  checkpoint_every: 1000
+  log_every: 20
+optimizer:
+  lr: 0.0003
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  eps: 0.00000001
+scheduler:
+  warmup_steps: 1000
+  min_lr_ratio: 0.1
+evaluation:
+  every: 1000
+  max_examples: 1024
+  generation_examples: 128
+  batch_size: 32
+  num_beams: 4
+  max_new_tokens: 512
+  length_penalty: 1.0
+  use_ema: true
+comet:
+  enabled: false
+  offline: false
+  project_name: nlp-codegen
+  workspace: null
+  offline_directory: comet_offline
+  log_checkpoints: false

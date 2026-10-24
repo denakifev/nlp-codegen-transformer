@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+data/
+checkpoints/
+runs/
+outputs/
+report/
+comet_offline/
+.ipynb_checkpoints/
+.DS_Store
+predictions*.jsonl

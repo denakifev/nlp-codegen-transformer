@@ -1,0 +1,5 @@
+data:
+  mode: online
+  tokenizer_path: checkpoints/tokenizer.json
+train:
+  output_dir: runs/online
